@@ -1,4 +1,4 @@
-public class SimpleEcho {
+public abstract class SimpleEcho {
 
 	// Just protected fields, encapsulation is overkill for simple examples
 	protected String host;
@@ -22,6 +22,7 @@ public class SimpleEcho {
 
 		SimpleEcho se = SimpleEcho.newInstance(args);
 		se.run();
+		se.stop();
 
 		System.out.println("Simple Echo Stop");
 	}
@@ -31,27 +32,24 @@ public class SimpleEcho {
 
 		if (options.socketType == SocketType.TCP) {
 			if (options.clientServer == ClientServer.CLIENT) {
-				// TODO: Return correct type later when build
-				return new SimpleEcho(options.host, options.port);
+				return new SimpleEchoTcpClient(options.host, options.port, options.message);
 			}
 			else {
-				return new SimpleEcho(options.host, options.port);
+				return new SimpleEchoTcpServer(options.host, options.port);
 			}
 		}
 		else {
 			if (options.clientServer == ClientServer.CLIENT) {
-				return new SimpleEcho(options.host, options.port);
+				return new SimpleEchoUdpClient(options.host, options.port, options.message);
 			}
 			else {
-				return new SimpleEcho(options.host, options.port);
+				return new SimpleEchoUdpServer(options.host, options.port);
 			}
 		}
 	}
 
-	protected void run() {
-		System.out.println("SimpleEcho.run()");;
-	}
-
+	protected abstract void run();
+	protected abstract void stop();
 
 	public static Options parseArguments(String[] args) {
 		// Arguments should always be --option=arg or --option.
